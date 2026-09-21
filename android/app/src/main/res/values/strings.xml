@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">泄漏检测</string>
+    <string name="title_settings">设置</string>
+    <string name="title_about">关于</string>
+
+    <string name="action_settings">设置</string>
+    <string name="action_about">关于</string>
+    <string name="action_refresh">刷新记录数</string>
+
+    <string name="hint_query">手机号 / 身份证 / 邮箱 / QQ</string>
+    <string name="btn_query">查询</string>
+    <string name="btn_clear">清空</string>
+
+    <string name="hint_input">输入 手机号 / 身份证号 / 邮箱 / QQ 号，点击「查询」</string>
+    <string name="hint_querying">正在查询…</string>
+    <string name="hint_empty">未查询到任何记录</string>
+    <string name="hint_error">查询失败：%1$s</string>
+
+    <string name="error_invalid_input">输入格式不正确：需为 身份证号 / 手机号 / 邮箱 / QQ 号之一</string>
+    <string name="error_no_server">尚未配置服务器地址，请先前往设置</string>
+
+    <string name="status_no_server">未配置服务器地址，请点击右上角「设置」</string>
+    <string name="status_server">服务器：%1$s</string>
+    <string name="status_count">服务器：%1$s　记录数：%2$s</string>
+    <string name="status_server_error">连接失败：%1$s</string>
+
+    <string name="field_id">身份证</string>
+    <string name="field_name">姓名</string>
+    <string name="field_receiver">收件人</string>
+    <string name="field_nickname">昵称</string>
+    <string name="field_phone">手机号</string>
+    <string name="field_email">邮箱</string>
+    <string name="field_qq">QQ</string>
+    <string name="field_weibo">微博</string>
+    <string name="field_address">地址</string>
+    <string name="field_car">车辆</string>
+    <string name="field_contact">联系人</string>
+    <string name="field_company">公司</string>
+    <string name="field_source">数据来源</string>
+
+    <string name="settings_hint_url">服务器地址，例如 http://172.16.1.4/leak-check</string>
+    <string name="settings_save">保存</string>
+    <string name="settings_test">测试连接</string>
+    <string name="settings_saved">已保存</string>
+    <string name="settings_test_ok">连接成功，数据库记录数：%1$s</string>
+    <string name="settings_test_fail">连接失败：%1$s</string>
+    <string name="settings_tip">提示：该地址需能在手机上访问到 leak-check 服务，支持 http 与 https。</string>
+
+    <string name="about_version_value">版本 %1$s</string>
+    <string name="about_author">作者</string>
+    <string name="about_project">项目主页</string>
+    <string name="about_author_name">Johnny520</string>
+    <string name="about_author_url">https://github.com/Johnny520</string>
+    <string name="about_project_url">https://github.com/Johnny520/leak-check</string>
+    <string name="about_note">本应用为 leak-check 的安卓客户端，通过在线接口查询个人信息“泄漏”记录，查询结果由服务端统一脱敏。</string>
+    <string name="about_open_failed">无法打开链接</string>
+</resources>

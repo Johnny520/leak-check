@@ -1,3 +1,6 @@
+> 🚀 **安卓客户端**：本仓库包含 leak-check 的安卓 App（原生 Kotlin、在线查询），源码见 [`android/`](./android)；
+> 已配置 GitHub Actions 自动构建 R8 签名 APK 并发布 Release。
+
 ### ✨ “泄漏” 与 “检测” 定义
 您的 “个人信息” 出现在被 “互联网” 广泛传播的 “部分” 数据中.
 

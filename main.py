@@ -20,9 +20,9 @@ app = FastAPI(
     version="3.0.0",
     summary="个人信息 “泄漏” 查询接口",
     contact={
-        "name": "嘉林数据",
-        "url": "https://leak-check.garinasset.com",
-        "email": "contact@garinasset.com",
+        "name": "Johnny520",
+        "url": "https://github.com/Johnny520/leak-check",
+        "email": "",
     },
     license_info={
         "name": "CC BY 4.0",
