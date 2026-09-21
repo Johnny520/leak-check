@@ -48,7 +48,7 @@
 
     <string name="settings_section_online">在线服务</string>
     <string name="settings_section_local">本地数据库（离线查询）</string>
-    <string name="settings_hint_url">服务器地址，例如 http://172.16.1.4/leak-check</string>
+    <string name="settings_hint_url">服务器地址，例如 https://api.garinasset.com/leak-check</string>
     <string name="settings_save">保存并使用</string>
     <string name="settings_test">测试连接</string>
     <string name="settings_saved">已保存并使用：%1$s</string>

@@ -10,7 +10,7 @@ object Prefs {
     private const val KEY_MODE = "query_mode"
 
     /** 预置默认服务器地址（内置，不可删除） */
-    const val DEFAULT_BASE_URL = "http://172.16.1.4/leak-check"
+    const val DEFAULT_BASE_URL = "https://api.garinasset.com/leak-check"
 
     const val MODE_ONLINE = "online"
     const val MODE_LOCAL = "local"
