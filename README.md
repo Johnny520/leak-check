@@ -1,8 +1,6 @@
 # leak-check 💠
 > 个人信息泄露查询工具 | 原生 Kotlin Android 客户端 | 在线 / 本地离线双查询，结果自动脱敏
 
-[![GitHub stars](https://img.shields.io/github/stars/garinasset/leak-check)](https://github.com/garinasset/leak-check)
-[![License MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 ---
 
