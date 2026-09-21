@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.johnny.leakcheck.data.AggregatedResult
 import com.johnny.leakcheck.data.ApiResult
 import com.johnny.leakcheck.data.LeakCheckApi
+import com.johnny.leakcheck.data.LocalDataSource
 import com.johnny.leakcheck.data.Prefs
 import com.johnny.leakcheck.databinding.ActivityMainBinding
 import com.johnny.leakcheck.ui.ResultAdapter
@@ -35,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         binding.resultList.layoutManager = LinearLayoutManager(this)
         binding.resultList.adapter = adapter
 
+        initModeSwitcher()
+
         binding.btnQuery.setOnClickListener { performQuery() }
         binding.btnClear.setOnClickListener {
             binding.inputQuery.setText("")
@@ -46,6 +49,22 @@ class MainActivity : AppCompatActivity() {
                 true
             } else {
                 false
+            }
+        }
+    }
+
+    private fun initModeSwitcher() {
+        binding.btnModeOnline.isChecked = !isLocalMode()
+        binding.btnModeLocal.isChecked = isLocalMode()
+        binding.modeGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                Prefs.setMode(
+                    this,
+                    if (checkedId == R.id.btnModeLocal) Prefs.MODE_LOCAL else Prefs.MODE_ONLINE
+                )
+                adapter.submit(emptyList())
+                showPlaceholder(getString(R.string.hint_input))
+                refreshCount()
             }
         }
     }
@@ -78,7 +97,22 @@ class MainActivity : AppCompatActivity() {
         refreshCount()
     }
 
+    private fun isLocalMode(): Boolean = Prefs.getMode(this) == Prefs.MODE_LOCAL
+
     private fun refreshCount() {
+        if (isLocalMode()) {
+            lifecycleScope.launch {
+                binding.txtStatus.text = getString(R.string.status_local_loading)
+                when (val r = LocalDataSource.count(this@MainActivity)) {
+                    is ApiResult.Success -> binding.txtStatus.text =
+                        getString(R.string.status_local_count, r.data)
+                    is ApiResult.Failure -> binding.txtStatus.text =
+                        getString(R.string.status_local_error, r.message)
+                }
+            }
+            return
+        }
+
         val base = Prefs.getBaseUrl(this)
         if (base.isBlank()) {
             binding.txtStatus.text = getString(R.string.status_no_server)
@@ -97,33 +131,48 @@ class MainActivity : AppCompatActivity() {
 
     private fun performQuery() {
         if (loading) return
+
         val raw = binding.inputQuery.text?.toString().orEmpty()
-        if (TypeDetector.detect(raw) == null) {
+        val type = TypeDetector.detect(raw)
+        if (type == null) {
             Snackbar.make(binding.root, getString(R.string.error_invalid_input), Snackbar.LENGTH_LONG)
                 .show()
             return
         }
-        val base = Prefs.getBaseUrl(this)
-        if (base.isBlank()) {
-            Snackbar.make(binding.root, getString(R.string.error_no_server), Snackbar.LENGTH_LONG)
-                .setAction(R.string.action_settings) {
-                    startActivity(Intent(this, SettingsActivity::class.java))
-                }
-                .show()
-            return
-        }
+        val q = TypeDetector.clean(raw)
 
         setLoading(true)
         showPlaceholder(getString(R.string.hint_querying))
-        lifecycleScope.launch {
-            val result = api.query(base, raw.trim())
-            setLoading(false)
-            when (result) {
-                is ApiResult.Success -> renderResult(result.data)
-                is ApiResult.Failure -> showPlaceholder(
-                    getString(R.string.hint_error, result.message)
-                )
+
+        if (isLocalMode()) {
+            lifecycleScope.launch {
+                val result = LocalDataSource.query(this@MainActivity, type, q)
+                setLoading(false)
+                handleResult(result)
             }
+        } else {
+            val base = Prefs.getBaseUrl(this)
+            if (base.isBlank()) {
+                setLoading(false)
+                Snackbar.make(binding.root, getString(R.string.error_no_server), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.action_settings) {
+                        startActivity(Intent(this, SettingsActivity::class.java))
+                    }
+                    .show()
+                return
+            }
+            lifecycleScope.launch {
+                val result = api.query(base, q)
+                setLoading(false)
+                handleResult(result)
+            }
+        }
+    }
+
+    private fun handleResult(result: ApiResult<AggregatedResult>) {
+        when (result) {
+            is ApiResult.Success -> renderResult(result.data)
+            is ApiResult.Failure -> showPlaceholder(getString(R.string.hint_error, result.message))
         }
     }
 

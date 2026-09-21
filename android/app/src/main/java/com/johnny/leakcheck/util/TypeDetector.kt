@@ -19,11 +19,14 @@ object TypeDetector {
     private val QQ = Regex("^\\d{5,11}$")
     private val SEPARATORS = Regex("[ \\-()]")
 
+    /** 清洗：去空格 / 连字符 / 括号（与服务端 request.py 一致） */
+    fun clean(raw: String): String = SEPARATORS.replace(raw.trim(), "")
+
     /** 返回 phone / email / id / qq；无法识别返回 null */
     fun detect(raw: String): String? {
         val trimmed = raw.trim()
         if (trimmed.isEmpty()) return null
-        val cleaned = SEPARATORS.replace(trimmed, "")
+        val cleaned = clean(trimmed)
         return when {
             CN_PHONE.matches(cleaned) || INTL_PHONE.matches(cleaned) -> TYPE_PHONE
             EMAIL.matches(trimmed) -> TYPE_EMAIL
