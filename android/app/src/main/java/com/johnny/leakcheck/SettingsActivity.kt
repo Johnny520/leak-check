@@ -1,9 +1,11 @@
 package com.johnny.leakcheck
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.johnny.leakcheck.data.ApiResult
 import com.johnny.leakcheck.data.LeakCheckApi
@@ -44,8 +46,10 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             Prefs.setBaseUrl(this, binding.inputUrl.text?.toString().orEmpty())
-            binding.inputUrl.setText(Prefs.getBaseUrl(this))
-            Snackbar.make(binding.root, getString(R.string.settings_saved), Snackbar.LENGTH_SHORT)
+            val saved = Prefs.getBaseUrl(this)
+            binding.inputUrl.setText(saved)
+            refreshServers()
+            Snackbar.make(binding.root, getString(R.string.settings_saved, saved), Snackbar.LENGTH_SHORT)
                 .show()
         }
 
@@ -63,6 +67,14 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnResetDefault.setOnClickListener {
+            Prefs.resetToDefault(this)
+            binding.inputUrl.setText(Prefs.getBaseUrl(this))
+            refreshServers()
+            Snackbar.make(binding.root, getString(R.string.settings_reset_done), Snackbar.LENGTH_SHORT)
+                .show()
+        }
+
         binding.btnImportDb.setOnClickListener {
             pickDb.launch(arrayOf("*/*"))
         }
@@ -70,7 +82,35 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        refreshServers()
         refreshLocalCount()
+    }
+
+    /** 重建服务器地址 Chip 列表：点击选用，× 删除自定义地址 */
+    private fun refreshServers() {
+        val current = Prefs.getBaseUrl(this)
+        binding.chipGroup.removeAllViews()
+        for (url in Prefs.getAllServers(this)) {
+            val chip = Chip(this)
+            chip.id = View.generateViewId()
+            chip.text = url
+            chip.isCheckable = true
+            chip.isChecked = url == current
+            chip.isCloseIconVisible = url != Prefs.DEFAULT_BASE_URL
+            chip.setOnClickListener {
+                Prefs.setBaseUrl(this, url)
+                binding.inputUrl.setText(url)
+                refreshServers()
+            }
+            if (url != Prefs.DEFAULT_BASE_URL) {
+                chip.setOnCloseIconClickListener {
+                    Prefs.removeServer(this, url)
+                    binding.inputUrl.setText(Prefs.getBaseUrl(this))
+                    refreshServers()
+                }
+            }
+            binding.chipGroup.addView(chip)
+        }
     }
 
     private fun refreshLocalCount() {

@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
                 false
             }
         }
+        // 点击状态栏可快速进入设置（切换服务器 / 导入数据库）
+        binding.txtStatus.setOnClickListener { openSettings() }
     }
 
     private fun initModeSwitcher() {
@@ -76,8 +79,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_switch_server -> {
+                showServerPicker()
+                true
+            }
             R.id.action_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                openSettings()
                 true
             }
             R.id.action_about -> {
@@ -97,7 +104,31 @@ class MainActivity : AppCompatActivity() {
         refreshCount()
     }
 
+    private fun openSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
     private fun isLocalMode(): Boolean = Prefs.getMode(this) == Prefs.MODE_LOCAL
+
+    /** 快速切换服务器地址（默认 + 自定义） */
+    private fun showServerPicker() {
+        val servers = Prefs.getAllServers(this)
+        if (servers.isEmpty()) return
+        val current = Prefs.getBaseUrl(this)
+        val checked = servers.indexOf(current).coerceAtLeast(0)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.action_switch_server)
+            .setSingleChoiceItems(servers.toTypedArray(), checked) { dialog, which ->
+                Prefs.setBaseUrl(this, servers[which])
+                dialog.dismiss()
+                adapter.submit(emptyList())
+                showPlaceholder(getString(R.string.hint_input))
+                refreshCount()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .setNeutralButton(R.string.action_settings) { _, _ -> openSettings() }
+            .show()
+    }
 
     private fun refreshCount() {
         if (isLocalMode()) {
@@ -155,9 +186,7 @@ class MainActivity : AppCompatActivity() {
             if (base.isBlank()) {
                 setLoading(false)
                 Snackbar.make(binding.root, getString(R.string.error_no_server), Snackbar.LENGTH_LONG)
-                    .setAction(R.string.action_settings) {
-                        startActivity(Intent(this, SettingsActivity::class.java))
-                    }
+                    .setAction(R.string.action_settings) { openSettings() }
                     .show()
                 return
             }

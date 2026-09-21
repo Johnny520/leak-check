@@ -7,6 +7,7 @@
     <string name="action_settings">设置</string>
     <string name="action_about">关于</string>
     <string name="action_refresh">刷新记录数</string>
+    <string name="action_switch_server">切换服务器</string>
 
     <string name="mode_online">在线查询</string>
     <string name="mode_local">本地查询</string>
@@ -48,11 +49,14 @@
     <string name="settings_section_online">在线服务</string>
     <string name="settings_section_local">本地数据库（离线查询）</string>
     <string name="settings_hint_url">服务器地址，例如 http://172.16.1.4/leak-check</string>
-    <string name="settings_save">保存</string>
+    <string name="settings_save">保存并使用</string>
     <string name="settings_test">测试连接</string>
-    <string name="settings_saved">已保存</string>
+    <string name="settings_saved">已保存并使用：%1$s</string>
     <string name="settings_test_ok">连接成功，数据库记录数：%1$s</string>
     <string name="settings_test_fail">连接失败：%1$s</string>
+    <string name="settings_servers_title">已保存地址（点击选用；× 删除自定义）</string>
+    <string name="settings_reset_default">恢复默认地址</string>
+    <string name="settings_reset_done">已恢复默认地址</string>
     <string name="settings_local_count">当前本地库记录数：%1$s</string>
     <string name="settings_local_count_error">本地库读取失败：%1$s</string>
     <string name="settings_import_db">导入 .db 文件</string>
@@ -66,6 +70,6 @@
     <string name="about_author_name">Johnny520</string>
     <string name="about_author_url">https://github.com/Johnny520</string>
     <string name="about_project_url">https://github.com/Johnny520/leak-check</string>
-    <string name="about_note">本应用为 leak-check 的安卓客户端，支持在线接口查询与本地数据库离线查询，查询结果统一脱敏。</string>
+    <string name="about_note">本应用为 leak-check 的安卓客户端：支持在线接口查询（默认地址 + 可自定义多个服务器地址）与本地数据库离线查询，查询结果统一脱敏。</string>
     <string name="about_open_failed">无法打开链接</string>
 </resources>

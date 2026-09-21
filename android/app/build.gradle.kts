@@ -11,8 +11,8 @@ android {
         applicationId = "com.johnny.leakcheck"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "3.1.0"
+        versionCode = 3
+        versionName = "3.2.0"
         vectorDrawables { useSupportLibrary = true }
     }
 
